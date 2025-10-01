@@ -84,6 +84,14 @@ class ViewController: UIViewController {
         return "Fifth result for: \(data)"
     }
 
+    /// Simulates a sixth calculation with a 5-second delay.
+    /// - Parameter data: The input string to process.
+    /// - Returns: A string indicating the sixth result was calculated.
+    func calculateSixthResult(_ data: String) -> String {
+        Thread.sleep(forTimeInterval: 5)
+        return "Sixth result for: \(data)"
+    }
+
     /// Action for single-threaded execution.
     /// Runs all tasks sequentially on a background queue and updates the UI when done.
     /// - Parameter sender: The button triggering the action.
@@ -111,7 +119,8 @@ class ViewController: UIViewController {
             let thirdResult = self.calculateThirdResult(processedData)
             let fourthResult = self.calculateFourthResult(processedData)
             let fifthResult = self.calculateFifthResult(processedData)
-            let resultsSummary = "First: [\(firstResult)]\nSecond: [\(secondResult)]\nThird: [\(thirdResult)]\nFourth: [\(fourthResult)]\nFifth: [\(fifthResult)]"
+            let sixthResult = self.calculateSixthResult(processedData)
+            let resultsSummary = "First: [\(firstResult)]\nSecond: [\(secondResult)]\nThird: [\(thirdResult)]\nFourth: [\(fourthResult)]\nFifth: [\(fifthResult)]\nSixth: [\(sixthResult)]"
             
             // Update UI on main thread after all work is done
             DispatchQueue.main.async {
@@ -126,7 +135,7 @@ class ViewController: UIViewController {
     }
     
     /// Action for multi-threaded execution.
-    /// Runs five calculations in parallel after fetching and processing data, then updates the UI.
+    /// Runs six calculations in parallel after fetching and processing data, then updates the UI.
     /// - Parameter sender: The button triggering the action.
     @IBAction func doGroupButton(_ sender: UIButton) {
         // Record start time for performance measurement
@@ -149,9 +158,10 @@ class ViewController: UIViewController {
             var thirdResult: String!
             var fourthResult: String!
             var fifthResult: String!
+            var sixthResult: String!
             let group = DispatchGroup()
             
-            // Run all five calculations in parallel using DispatchGroup
+            // Run all six calculations in parallel using DispatchGroup
             queue.async(group: group) {
                 firstResult = self.calculateFirstResult(processedData)
             }
@@ -173,9 +183,13 @@ class ViewController: UIViewController {
                 fifthResult = self.calculateFifthResult(processedData)
             }
             
+            queue.async(group: group) {
+                sixthResult = self.calculateSixthResult(processedData)
+            }
+            
             // Notify when all calculations are done
             group.notify(queue: queue) {
-                let resultsSummary = "First: [\(firstResult!)]\nSecond: [\(secondResult!)]\nThird: [\(thirdResult!)]\nFourth: [\(fourthResult!)]\nFifth: [\(fifthResult!)]"
+                let resultsSummary = "First: [\(firstResult!)]\nSecond: [\(secondResult!)]\nThird: [\(thirdResult!)]\nFourth: [\(fourthResult!)]\nFifth: [\(fifthResult!)]\nSixth: [\(sixthResult!)]"
                 // Update UI on main thread
                 DispatchQueue.main.async {
                     self.resultsTextView.text = resultsSummary
