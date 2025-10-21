@@ -181,7 +181,7 @@ class ViewController: UIViewController {
             var eighthResult: String!
             let group = DispatchGroup()
             
-            // Run all six calculations in parallel using DispatchGroup
+            // Run all eight calculations in parallel using DispatchGroup
             queue.async(group: group) {
                 firstResult = self.calculateFirstResult(processedData)
             }
